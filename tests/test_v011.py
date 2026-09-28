@@ -1,44 +1,18 @@
-import random
-import unittest
-
+import json, random, unittest
 from tool_contract_fuzzer.core import cases, invalid_variants, value
-
-
-class BoundaryGenerationTests(unittest.TestCase):
-    def test_generator_honors_numeric_and_length_bounds(self):
-        rng = random.Random(7)
-        schema = {
-            "type": "object",
-            "required": ["n", "name"],
-            "properties": {
-                "n": {"type": "integer", "minimum": 5, "maximum": 8},
-                "name": {"type": "string", "minLength": 3, "maxLength": 5},
-            },
-        }
+class BoundaryTests(unittest.TestCase):
+    def test_valid_generation_honors_bounds(self):
+        schema={'type':'object','required':['n','name'],'properties':{'n':{'type':'integer','minimum':5,'maximum':8},'name':{'type':'string','minLength':3,'maxLength':5}}}
+        rng=random.Random(7)
         for _ in range(20):
-            generated = value(schema, rng)
-            self.assertLessEqual(5, generated["n"])
-            self.assertLessEqual(generated["n"], 8)
-            self.assertLessEqual(3, len(generated["name"]))
-            self.assertLessEqual(len(generated["name"]), 5)
-
-    def test_invalid_cases_target_boundaries(self):
-        schema = {
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["n"],
-            "properties": {"n": {"type": "integer", "minimum": 2, "maximum": 4}},
-        }
-        good = {"n": 3}
-        reasons = {reason for reason, _ in invalid_variants(schema, good)}
-        self.assertIn("below-minimum:n", reasons)
-        self.assertIn("above-maximum:n", reasons)
-        self.assertIn("additional-property", reasons)
-
-    def test_case_generation_is_seed_deterministic(self):
-        schema = {"type": "integer", "minimum": 1, "maximum": 9}
-        self.assertEqual(list(cases(schema, seed=42, count=4)), list(cases(schema, seed=42, count=4)))
-
-
-if __name__ == "__main__":
-    unittest.main()
+            x=value(schema,rng); self.assertTrue(5<=x['n']<=8); self.assertTrue(3<=len(x['name'])<=5)
+    def test_invalid_mutations_probe_boundaries(self):
+        schema={'type':'object','additionalProperties':False,'required':['n'],'properties':{'n':{'type':'integer','minimum':2,'maximum':4}}}
+        reasons={r for r,_ in invalid_variants(schema,{'n':3})}
+        self.assertTrue({'below-minimum:n','above-maximum:n','additional-property'}<=reasons)
+    def test_generated_cases_remain_json_serializable(self):
+        schema={'type':'object','required':['x'],'properties':{'x':{'type':'string','const':'fixed'}}}
+        json.dumps(list(cases(schema,seed=1,count=1)))
+    def test_seed_deterministic(self):
+        s={'type':'integer','minimum':1,'maximum':9}; self.assertEqual(list(cases(s,42,4)),list(cases(s,42,4)))
+if __name__=='__main__': unittest.main()
