@@ -1,10 +1,8 @@
-# Contributing to Tool Contract Fuzzer
+# Contributing
 
-Prefer small, evidence-backed changes tied to a concrete failure mode or developer workflow. Behavioral changes need regression tests.
+Changes to generation or mutation behavior should include deterministic seeded regression tests.
 
 ```bash
 PYTHONPATH=src python -m unittest discover -s tests -v
-python -m compileall -q src tests
+python3 -m compileall -q src tests
 ```
-
-Prefer inspectable core logic over unnecessary dependencies.
