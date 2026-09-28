@@ -34,3 +34,12 @@ python -m unittest discover -s tests -v
 ```
 
 MIT licensed.
+
+
+## v0.1.1
+
+**Boundary-aware schema generation.** Generators now honor common numeric/string/array bounds and invalid cases deliberately probe boundary, enum, type, required-field, and additional-property failures.
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
