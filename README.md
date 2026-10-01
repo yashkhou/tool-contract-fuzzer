@@ -1,3 +1,9 @@
+> [!IMPORTANT]
+> **This project now lives in [agent-reliability-lab](https://github.com/yashkhou/agent-reliability-lab/tree/main/packages/tool-contract-fuzzer).** Its full history was moved there and this repository is archived.
+>
+> `pip install "git+https://github.com/yashkhou/agent-reliability-lab#subdirectory=packages/tool-contract-fuzzer"`
+
+
 # tool-contract-fuzzer
 
 Deterministic property-style fuzzing for JSON-schema tool contracts, including invalid-call generation and failure shrinking.
